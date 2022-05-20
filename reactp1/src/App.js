@@ -2,19 +2,16 @@ import React, { useEffect, useState } from 'react';
 import Modal from "react-modal";
 import { Form } from "react-bootstrap";
 import './App.css';
-import api from "./services/api";
 import axios from 'axios';
 
 
 Modal.setAppElement("#root");
-const url = 'https://crudcrud.com/api/f7775050ebcd4204807a883667143f40';
+const url = 'https://crudcrud.com/api/0d1af44e13c745e3a7a1f0f283fea3c0/register';
 
-/* axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS';
-axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With';
- */
+
 function App() {
-
+  
+  
   //submit method
     /* const[name, setName] = useState("");
     const[birthdate, setBirthdate] = useState("");
@@ -30,10 +27,8 @@ function App() {
       console.log("entrou");
       console.log(name, gender);
       try {
-          const res = await axios.post("https://crudcrud.com/api/a01fc2b816d5414d94212dd0e2a79c13", {
-            method: "POST", 
-            headers: { "Content-Type": "multipart/form-data" },
-            body: JSON.stringify({
+          const res = await axios.post("url", {
+              body: JSON.stringify({
               name: name,
               birthdate: birthdate,
               gender: gender,
@@ -68,15 +63,8 @@ function App() {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [startdate, setStartDate] = useState('');
-  const config = {
-      'Authorization': 'Bearer my-token',
-      'My-Custom-Header': 'foobar',
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-    };
+  const [register, setRegister] = useState([]);
   
-  const element = document.querySelector('#post-request .article-id');
   const fields = {
     name: name,
     gender: gender,
@@ -85,37 +73,39 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(name, gender, startdate);
-    await axios.post(url, fields , {config} ).then(response => element.innerHTML = response.data.id);
-
-    /*try{
-      const resp = await axios.post(url, fields , {config} , {
-       method: "POST", 
-        headers: {
-          "Access-Control-Allow-Origin" : "*",
-          "Access-Control-Allow-Methods" : "GET,POST,PUT,DELETE,OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-        },
+    //await axios.post(url, fields , {config} ).then(response => element.innerHTML = response.data.id);
+    try{
+      const resp = await axios.post(url, fields , 
+        {
         body: JSON.stringify({ 
         name: name,
         gender: gender,
         startdate: startdate 
-        //})
-      });
+        })
+      })
       console.log(resp.data);
     } catch(error) {
       console.log(error.response);
-    }*/
-
+    }
   };
 
-  const  test = () => {
-    const a = axios.get('https://crudcrud.com/api/f7775050ebcd4204807a883667143f40');
-    console.log(a);
+  const  test = async (e) => {
+    e.preventDefault();
+    const a = await axios.get(url);
     console.log(a.data);
-    console.log("worked");
   } ;
 
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setName(data[0].name);
+        
+      })
+  }, [])
 
+  
   // modal operation
   const [modalIsOpen, setIsOpen] = useState(false);
   function openModal(){
@@ -135,9 +125,11 @@ function App() {
       <p>Email:{email}</p>
       <p>StartDate :{startdate}</p>
       <p>Team :{team}</p> */}
+      <p>{name}</p>
       <button onClick={test}>test</button>
+      
       <br/>
-      <article id='post-request' class='article-id'></article>
+      
       <br/>
 
       <h2>Employee Registration</h2>
