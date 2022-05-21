@@ -100,7 +100,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setName(data[0].name);
+        setRegister(data);
         
       })
   }, [])
@@ -125,7 +125,16 @@ function App() {
       <p>Email:{email}</p>
       <p>StartDate :{startdate}</p>
       <p>Team :{team}</p> */}
-      <p>{name}</p>
+      <section>
+        {register.map( (register) => {
+        return <p>Name: {register.name}</p>;
+        })}
+      </section>
+      <section>
+        {register.map((register) => {
+        return <p>{register.gender} </p>;
+        })}
+      </section>
       <button onClick={test}>test</button>
       
       <br/>
