@@ -1,16 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-modal";
-import { Form } from "react-bootstrap";
+import { Form, Card } from "react-bootstrap";
 import './App.css';
 import axios from 'axios';
 
-
 Modal.setAppElement("#root");
-const url = 'https://crudcrud.com/api/0d1af44e13c745e3a7a1f0f283fea3c0/register';
+const url = 'https://crudcrud.com/api/0a3ec32470e9452bb00596cb476ec73e/register';
 
+function RenderList() {
+  let [register, setRegister] = useState([]);
 
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+       setRegister(data);
+        
+      })
+  }, [])
+
+  const listItems = register.map(
+    (profile) => {
+        return (
+          <Card style={{ width: '18rem' }}>
+            <Card.Body>
+              <Card.Title>
+                {profile.name}
+              </Card.Title>
+              <Card.Text>
+                <ul>
+                  <li>{profile.gender}</li>
+                  <li>{profile.startdate}</li>
+                </ul>
+              </Card.Text>      
+            </Card.Body>
+          </Card>
+        )
+    }
+  )
+  return (
+      <section>
+          {listItems}
+      </section>
+  )
+}
 function App() {
-  
   
   //submit method
     /* const[name, setName] = useState("");
@@ -21,13 +55,21 @@ function App() {
     const[startdate, setStartDate] = useState("");
     const[team, setTeam] = useState("");
     const[message, setMessage] = useState("");
-
+    const fields = {
+      name: name,
+      birthdate: birthdate,
+      gender: gender,
+      email: email,
+      cpf: cpf,
+      startdate: startdate,
+      team: team
+    }
     const handleSubmit = async (e) => {
       e.preventDefault();
       console.log("entrou");
       console.log(name, gender);
       try {
-          const res = await axios.post("url", {
+          const res = await axios.post(url, fields, {
               body: JSON.stringify({
               name: name,
               birthdate: birthdate,
@@ -73,7 +115,6 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(name, gender, startdate);
-    //await axios.post(url, fields , {config} ).then(response => element.innerHTML = response.data.id);
     try{
       const resp = await axios.post(url, fields , 
         {
@@ -83,7 +124,7 @@ function App() {
         startdate: startdate 
         })
       })
-      console.log(resp.data);
+      window.location.reload();
     } catch(error) {
       console.log(error.response);
     }
@@ -99,11 +140,11 @@ function App() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setRegister(data);
         
       })
   }, [])
+
 
   
   // modal operation
@@ -118,23 +159,14 @@ function App() {
   return (
 
    <div className="Container">
-
+      <RenderList />
       <button onClick={openModal}>Register</button>
       {/* <section> {message? <p>{message}</p> : null } </section> */}
       {/* <p>Name:{name}</p>
       <p>Email:{email}</p>
       <p>StartDate :{startdate}</p>
       <p>Team :{team}</p> */}
-      <section>
-        {register.map( (register) => {
-        return <p>Name: {register.name}</p>;
-        })}
-      </section>
-      <section>
-        {register.map((register) => {
-        return <p>{register.gender} </p>;
-        })}
-      </section>
+          
       <button onClick={test}>test</button>
       
       <br/>
