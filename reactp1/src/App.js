@@ -7,14 +7,21 @@ import axios from 'axios';
 
 
 Modal.setAppElement("#root");
-const url = 'https://crudcrud.com/api/f7775050ebcd4204807a883667143f40';
 
-/* axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS';
-axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With';
- */
-function App() {
+const url = 'https://crudcrud.com/api/f7775050ebcd4204807a883667143f40/register';
 
+function App() { 
+  const[register, setRegister] = useState();
+
+  useEffect(()=> {
+    axios    
+    .get(url, {fields})
+    .then((response) => setRegister(response.data))
+    .catch((err) => {
+      console.error("er...não deu" + err);
+    });
+   }, []);
+  
   //submit method
     /* const[name, setName] = useState("");
     const[birthdate, setBirthdate] = useState("");
@@ -30,7 +37,7 @@ function App() {
       console.log("entrou");
       console.log(name, gender);
       try {
-          const res = await axios.post("https://crudcrud.com/api/a01fc2b816d5414d94212dd0e2a79c13", {
+          const res = await axios.post(url, {
             method: "POST", 
             headers: { "Content-Type": "multipart/form-data" },
             body: JSON.stringify({
@@ -65,54 +72,50 @@ function App() {
     }
    */
   // la vamos nos
+
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [startdate, setStartDate] = useState('');
-  const config = {
-      'Authorization': 'Bearer my-token',
-      'My-Custom-Header': 'foobar',
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-    };
   
-  const element = document.querySelector('#post-request .article-id');
   const fields = {
+    _id: id,
     name: name,
     gender: gender,
     startdate: startdate
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, gender, startdate);
-    await axios.post(url, fields , {config} ).then(response => element.innerHTML = response.data.id);
-
-    /*try{
-      const resp = await axios.post(url, fields , {config} , {
-       method: "POST", 
-        headers: {
-          "Access-Control-Allow-Origin" : "*",
-          "Access-Control-Allow-Methods" : "GET,POST,PUT,DELETE,OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-        },
+    console.log(fields);
+    
+    try{
+      const resp = await axios.post(url, fields, 
+       {
         body: JSON.stringify({ 
         name: name,
         gender: gender,
         startdate: startdate 
-        //})
+        })
       });
       console.log(resp.data);
     } catch(error) {
       console.log(error.response);
-    }*/
+    }
 
   };
+  //get
 
-  const  test = () => {
-    const a = axios.get('https://crudcrud.com/api/f7775050ebcd4204807a883667143f40');
-    console.log(a);
-    console.log(a.data);
-    console.log("worked");
+  const  test = async (e) => {
+    e.preventDefault();
+    const a = await axios.get(url)
+    .then((response) => response.data);
+    let name = a.data[0].name;
+    console.log(a.data.length);
+    console.log(name);
+    fields.name = name;
+    console.log(fields);
+    
   } ;
 
 
@@ -130,22 +133,24 @@ function App() {
    <div className="Container">
 
       <button onClick={openModal}>Register</button>
+      
+      
       {/* <section> {message? <p>{message}</p> : null } </section> */}
-      {/* <p>Name:{name}</p>
-      <p>Email:{email}</p>
+      <p>Name:{register?.name}</p>
+      {/*<p>Email:{email}</p>
       <p>StartDate :{startdate}</p>
       <p>Team :{team}</p> */}
       <button onClick={test}>test</button>
       <br/>
-      <article id='post-request' class='article-id'></article>
-      <br/>
-
+      
       <h2>Employee Registration</h2>
           
           <hr />
           <Form className='reg-form' onSubmit={handleSubmit}>
             
             <Form.Group className="mb-3" controlId="Name">
+              <Form.Control type="hidden" onChange={(e) => setId(e.target.value)} />
+
               <Form.Label className="label-title">Name</Form.Label>
               <Form.Control 
                 className="input-control" 
