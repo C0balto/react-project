@@ -1,9 +1,13 @@
 
 .Container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
+  
+}
+.Container > section {
+  margin: 10px;
 }
 
 .modal-overlay  {
@@ -35,7 +39,7 @@
   flex-direction: column; 
 
 }
-button {
+buttons {
   padding: 5px;
   font-size: medium;
   float: right;
@@ -64,4 +68,23 @@ button {
   margin-top:10px;
   width:50%;
 
+}
+.blindfold {
+  display: none;
+}
+
+.profile {
+  margin: 5px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  justify-content: flex-start;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 2px 2px 7px rgb(128, 127, 127);
+}
+.del {
+  margin: 5px;
+  
 }

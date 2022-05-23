@@ -1,46 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-modal";
-import { Form } from "react-bootstrap";
+import { Form, Card } from "react-bootstrap";
 import './App.css';
-import api from "./services/api";
 import axios from 'axios';
 
-
 Modal.setAppElement("#root");
+const url = 'https://crudcrud.com/api/580972c90035439c93b8e255a7cbc1e3/profile';
 
-const url = 'https://crudcrud.com/api/f7775050ebcd4204807a883667143f40/register';
+function RenderList() {
+  let [register, setRegister] = useState([]);
 
-function App() { 
-  const[register, setRegister] = useState();
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+       setRegister(data);
+        
+      })
+  }, []);
 
-  useEffect(()=> {
-    axios    
-    .get(url, {fields})
-    .then((response) => setRegister(response.data))
-    .catch((err) => {
-      console.error("er...não deu" + err);
-    });
-   }, []);
+  const listItems = register.map(
+    (profile) => {
+     
+        return (
+          <section className='profile'>
+            <Card  style={{ width: '18rem'}}>
+              <Card.Body>
+                <Card.Title>
+                  {profile.name}
+                </Card.Title>
+                <Card.Text>
+                  <ul>
+                    <li class="blindfold">{profile._id}</li>
+                    <li>{profile.name}</li>
+                    <li>{profile.birthdate}</li>
+                    <li>{profile.email}</li>
+                    <li>{profile.cpf}</li>
+                    <li>{profile.gender}</li>
+                    <li>{profile.startdate}</li>  
+                    <li>{profile.team}</li>  
+                  </ul>
+                  <button className='del' onClick={() => axios.delete(url + `/${profile._id}` )}>delete</button>
+                  
+                </Card.Text>      
+              </Card.Body>
+            </Card>
+          </section>
+        )
+    }
+  )
+  return (
+      <section>
+          {listItems}
+      </section>
+  )
+}
+function App() {
   
   //submit method
-    /* const[name, setName] = useState("");
+    const[name, setName] = useState("");
     const[birthdate, setBirthdate] = useState("");
     const[gender, setGender] = useState("");
     const[email, setEmail] = useState("");
     const[cpf, setCPF] = useState("");
     const[startdate, setStartDate] = useState("");
     const[team, setTeam] = useState("");
-    const[message, setMessage] = useState("");
-
+    const [register, setRegister] = useState([]);
+    
+    const fields = {
+      name: name,
+      birthdate: birthdate,
+      gender: gender,
+      email: email,
+      cpf: cpf,
+      startdate: startdate,
+      team: team
+    }
     const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log("entrou");
-      console.log(name, gender);
+      console.log(fields);
+
       try {
-          const res = await axios.post(url, {
-            method: "POST", 
-            headers: { "Content-Type": "multipart/form-data" },
-            body: JSON.stringify({
+          await axios.post(url, fields, {
+              body: JSON.stringify({
               name: name,
               birthdate: birthdate,
               gender: gender,
@@ -48,38 +90,26 @@ function App() {
               cpf: cpf,
               startdate: startdate,
               team: team,
-              }),
-          });
-          let resJson = await res.json();      
-          if(res.status === 200) {
-            setName("");
-            setBirthdate("");
-            setGender("");
-            setEmail("");
-            setCPF("");
-            setStartDate("");
-            setTeam("");
-            setMessage("Registro feito com sucesso!");
-          } else {
-          setMessage("Deu um erro do além!");
-          }
-        } catch(error => {
-          console.warn('fuuudeu de vez')
-        }) {
-          console.log(err);
-      }
+              })
+             
+          })
+          window.location.reload();
+        } catch(error) {
+          console.log(error.response);
+        }
+         
       
     }
-   */
+   
   // la vamos nos
-
-  const [id, setId] = useState('');
+  /*
+  const [_id, setId] = useState('');
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [startdate, setStartDate] = useState('');
+  const [register, setRegister] = useState([]);
   
   const fields = {
-    _id: id,
     name: name,
     gender: gender,
     startdate: startdate
@@ -87,38 +117,37 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(fields);
-    
     try{
-      const resp = await axios.post(url, fields, 
-       {
-        body: JSON.stringify({ 
+      await axios.post(url, fields , 
+        {
+        body: JSON.stringify({
         name: name,
         gender: gender,
         startdate: startdate 
-        })
-      });
-      console.log(resp.data);
+        })        
+      })
+      window.location.reload();
     } catch(error) {
       console.log(error.response);
     }
-
-  };
+  }; */
   //get
 
-  const  test = async (e) => {
+  const  getProfiles = async (e) => {
     e.preventDefault();
-    const a = await axios.get(url)
-    .then((response) => response.data);
-    let name = a.data[0].name;
-    console.log(a.data.length);
-    console.log(name);
-    fields.name = name;
-    console.log(fields);
-    
+    const a = await axios.get(url);
+    console.log(a.data);
+  
   } ;
 
-
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setRegister(data);   
+      })
+  }, [])
+  
   // modal operation
   const [modalIsOpen, setIsOpen] = useState(false);
   function openModal(){
@@ -131,23 +160,20 @@ function App() {
   return (
 
    <div className="Container">
+    <section>
+     <button onClick={openModal}>Register</button>        
+     <br/><br/><br/>
+     <button onClick={getProfiles}>test</button>
+    </section>
 
-      <button onClick={openModal}>Register</button>
-      
-      
-      {/* <section> {message? <p>{message}</p> : null } </section> */}
-      <p>Name:{register?.name}</p>
-      {/*<p>Email:{email}</p>
-      <p>StartDate :{startdate}</p>
-      <p>Team :{team}</p> */}
-      <button onClick={test}>test</button>
-      <br/>
-      
-      <h2>Employee Registration</h2>
-          
-          <hr />
+    <section className='profiles'>
+     <h2>Employee Register</h2>
+     <RenderList />
+    </section>
+  
+   {/*  <section>   
           <Form className='reg-form' onSubmit={handleSubmit}>
-            
+          <h2>  Form Register </h2>    
             <Form.Group className="mb-3" controlId="Name">
               <Form.Control type="hidden" onChange={(e) => setId(e.target.value)} />
 
@@ -188,8 +214,8 @@ function App() {
             
             <button className="submitbt" type='submit'>Submit</button>
 
-          </Form>
-
+          </Form> 
+        </section> */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -198,7 +224,7 @@ function App() {
         overlayClassName="modal-overlay"
         >
           <button onClick={closeModal}>close</button>
-          {/* <h2>Employee Registration</h2>
+          <h2>Employee Registration</h2>
           
           <hr />
           <Form className='reg-form' onSubmit={handleSubmit}>
@@ -251,7 +277,7 @@ function App() {
                 placeholder="Enter your e-mail" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
-                //pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$" 
+                
                 required
               />
             </Form.Group>
@@ -292,7 +318,7 @@ function App() {
               </select>
             </Form.Group>
             <button className="submitbt" type='submit'>Submit</button>
-          </Form> */}
+          </Form>
 
          
       </Modal>
