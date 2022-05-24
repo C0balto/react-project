@@ -5,8 +5,9 @@ import './App.css';
 import axios from 'axios';
 
 Modal.setAppElement("#root");
-const url = 'https://crudcrud.com/api/d95f2be966f9471ba3687a8b302ed04b/profile';
+const url = 'https://crudcrud.com/api/7dc57921d52c4ae0b2adfe7593fc5290/profile';
 
+// Render of post list
 function RenderList() {
   let [register, setRegister] = useState([]);
 
@@ -17,6 +18,7 @@ function RenderList() {
        setRegister(data);
         
       })
+      
   }, []);
 
   const listItems = register.map(
@@ -31,7 +33,7 @@ function RenderList() {
                 </Card.Title>
                 <Card.Text>
                   <ul>
-                    <li class="blindfold">{profile._id}</li>
+                    <li className="blindfold">{profile._id}</li>
                     <li>{profile.name}</li>
                     <li>{profile.birthdate}</li>
                     <li>{profile.email}</li>
@@ -40,7 +42,7 @@ function RenderList() {
                     <li>{profile.startdate}</li>  
                     <li>{profile.team}</li>  
                   </ul>
-                  <button className='del' onClick={() => axios.delete(url + `/${profile._id}` )}>delete</button>
+                  <button className='del' onClick={() => axios.delete(url + `/${profile._id}`)}>delete</button>
                   
                 </Card.Text>      
               </Card.Body>
@@ -101,52 +103,33 @@ function App() {
       
     }
    
-  // la vamos nos
-  /*
-  const [_id, setId] = useState('');
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [startdate, setStartDate] = useState('');
-  const [register, setRegister] = useState([]);
   
-  const fields = {
-    name: name,
-    gender: gender,
-    startdate: startdate
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try{
-      await axios.post(url, fields , 
-        {
-        body: JSON.stringify({
-        name: name,
-        gender: gender,
-        startdate: startdate 
-        })        
-      })
-      window.location.reload();
-    } catch(error) {
-      console.log(error.response);
-    }
-  }; */
-  //get
-
+  //get info to console and reload
   const  getProfiles = async (e) => {
     e.preventDefault();
     const a = await axios.get(url);
     console.log(a.data);
-  
-  } ;
 
+    if(a.data.length === 0){
+      console.log('sem registros na base');
+      
+    }else {
+     console.log('a base possui registros');
+    }
+  
+  };
+
+  const Refresh = () => {
+    window.location.reload();
+  }
+/* 
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setRegister(data);   
       })
-  }, [])
+  }, []) */
   
   // modal operation
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -161,9 +144,11 @@ function App() {
 
    <div className="Container">
     <section>
-     <button onClick={openModal}>Register</button>        
+     <button className="panelbuttons" onClick={openModal}>Register</button>        
      <br/><br/><br/>
-     <button onClick={getProfiles}>test</button>
+     <button className="panelbuttons" onClick={getProfiles}>Read datas</button>
+     <br/><br/><br/>
+     <button className="panelbuttons" onClick={Refresh}>Reload</button>
     </section>
 
     <section className='profiles'>
@@ -171,51 +156,6 @@ function App() {
      <RenderList />
     </section>
   
-   {/*  <section>   
-          <Form className='reg-form' onSubmit={handleSubmit}>
-          <h2>  Form Register </h2>    
-            <Form.Group className="mb-3" controlId="Name">
-              <Form.Control type="hidden" onChange={(e) => setId(e.target.value)} />
-
-              <Form.Label className="label-title">Name</Form.Label>
-              <Form.Control 
-                className="input-control" 
-                type="text" 
-                name="name" 
-                placeholder="Enter your Name" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" placeholder="gender"> 
-              <Form.Label className="label-title"> Select your Gender</Form.Label>
-              <select 
-                className="input-control" 
-                name="gender" 
-                value={gender} 
-                onChange={(e) => setGender(e.target.value)} 
-                >
-                <option defaultValue="">-----</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other gender">Other Gender</option>
-              </select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="label-title">Start Date</Form.Label>
-              <Form.Control 
-                className="input-control" 
-                value={startdate} 
-                onChange={(e) => setStartDate(e.target.value)}
-                type="month" 
-                min="2015-01" 
-              />
-            </Form.Group>
-            
-            <button className="submitbt" type='submit'>Submit</button>
-
-          </Form> 
-        </section> */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -290,7 +230,7 @@ function App() {
                 onChange={(e) => setCPF(e.target.value)}
                 maxLength="14" 
                 placeholder="Enter your CPF number" 
-                //pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})" 
+                pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})" 
                 required
               />
             </Form.Group>
